@@ -83,11 +83,8 @@
         "_id": "todo_17",
         "text": "Feed cat",
         "isCompleted": true
-    },
-    "1todo_8": {
-        "_id": "todo_18",
-        "text": "Change light bulbs",
-        "isCompleted": false
+    }
+   
     }
     
   }
