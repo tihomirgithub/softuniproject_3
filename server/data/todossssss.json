@@ -88,11 +88,6 @@
         "_id": "todo_18",
         "text": "Change light bulbs",
         "isCompleted": false
-    },
-    "1todo_9": {
-        "_id": "todo_19",
-        "text": "Go to Store",
-        "isCompleted": false
     }
-   
+    
   }
