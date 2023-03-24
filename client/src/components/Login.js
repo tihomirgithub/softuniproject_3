@@ -2,10 +2,13 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+import { useContext } from "react";
+import { AppContext } from '../App';
+
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {useState } from 'react';
+
 
 const result = '';
 const baseUrl = `http://localhost:3030/users`;
@@ -20,23 +23,10 @@ const {register, handleSubmit, formState: {errors} } = useForm({
     resolver: yupResolver(schema),
 });
 
-const [auth, setAuth] = useState({});
+const {onSubmit} = useContext(AppContext);
 
-const onSubmit = async (data) => {
 
-console.log(data);
-      const responce = await fetch(`${baseUrl}/login`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(data) 
-      });
-      const result = await responce.json();
-     console.log(result);
-     setAuth(result);
 
-} 
    
 
   return (
