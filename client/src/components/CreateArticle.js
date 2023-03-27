@@ -6,6 +6,8 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
+import {  useNavigate } from 'react-router-dom';
+
 import { useContext, useState } from 'react';
 import { AppContext } from '../App';
 
@@ -13,6 +15,8 @@ const baseUrl = 'http://localhost:3030/jsonstore/articles';
 
 
 function CreateArticle() {
+
+  const navigate = useNavigate();
 
   const initialState = [];
   
@@ -41,6 +45,8 @@ const onSubmit = async (data) => {
   const result = await responce.json();
   
   setArticles(initialState => [...initialState, {title:result.title}]); 
+
+  navigate('/');
 } 
 
   return (
