@@ -39,6 +39,15 @@ function Navigationbar() {
               </>
             </Nav.Link>    
                 )}
+             {authValues.isAuthenticated && (                    
+            <Nav.Link>
+            {' '}
+            <Link className="text-decoration-none text-white" to="/userCreateArticle">
+                UserCreateArticle
+              </Link>
+            </Nav.Link>    
+                )}   
+                
 
             {!authValues.isAuthenticated && (                    
             <Nav.Link>
@@ -58,12 +67,7 @@ function Navigationbar() {
             </Nav.Link>    
                 )}
             
-            <Nav.Link>
-            {' '}
-              <Link className="text-decoration-none text-white" to="/select">
-                Select
-              </Link>
-            </Nav.Link>
+          
             <Nav.Link>
             {' '}
               <Link className="text-decoration-none text-white" to="/createArticle">

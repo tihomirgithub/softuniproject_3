@@ -12,10 +12,12 @@ import { useContext, useState } from 'react';
 import { AppContext } from '../App';
 import { result } from 'lodash';
 
-const baseUrl = 'http://localhost:3030/jsonstore/articles';
+const baseUrl = 'http://localhost:3030/data/articles';
 
 
-function CreateArticle() {
+function UserCreateArticle() {
+
+  const {authValues} = useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -36,20 +38,19 @@ const {register, handleSubmit, formState: {errors} } = useForm({
     resolver: yupResolver(schema),
 });
 
-const onSubmit = async (data) => {
+const onSubmit = async (data ) => {
   console.log(data);
+  
   const responce = await fetch(baseUrl, {
     method: 'POST',
     headers: {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      "X-Authorization": authValues.token
     },
     body: JSON.stringify(data) 
   });
   const result = await responce.json();
   console.log (result);
-  
- 
-
   navigate('/');
 }
 
@@ -58,9 +59,9 @@ const onSubmit = async (data) => {
     <Container>
         <Form onSubmit={handleSubmit(onSubmit)} >
      
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Author</Form.Label>
-        <Form.Control type="text" placeholder={tata} value={tata} {...register("author")} />
+        <Form.Control readOnly type="text" placeholder={tata} value={authValues.userEmail} {...register("author")} />
         <p style={{color: "red"}} >{errors.author?.message}</p>
       </Form.Group>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -80,6 +81,7 @@ const onSubmit = async (data) => {
       <Form.Group controlId="formBasicSelect">
      <Form.Label>Select Image</Form.Label>
      <Form.Control as="select" {...register("image")} >
+        <option value="">choose image</option>
         <option value="Chrysanthemum">Chrysanthemum</option>
         <option value="Desert">Desert</option>
         <option value="Koala">Koala</option>
@@ -100,4 +102,4 @@ const onSubmit = async (data) => {
   );
 }
 
-export default CreateArticle;
+export default UserCreateArticle;

@@ -6,8 +6,9 @@ import Home from './components/Home.js';
 import Login from './components/Login.js';
 import Logout from './components/Logout.js';
 import Register from './components/Register.js';
-import Select from './components/Select.js';
+
 import CreateArticle from './components/CreateArticle.js';
+import UserCreateArticle from './components/UserCreateArticle.js';
 import {useState, createContext} from 'react';
 
 
@@ -19,30 +20,39 @@ const baseUrl = `http://localhost:3030/users`;
 
 function App() {
   const navigate = useNavigate();
-  const tata = "tat";
-  const user = "bb";
-
-  
+  const tata = "tat"; 
 
   const [auth, setAuth] = useState({});
 
-const onSubmit = async (data) => {
-      const responce = await fetch(`${baseUrl}/login`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(data) 
-      });
-      const result = await responce.json();
-     console.log(result);
-     setAuth(result);
-     navigate('/');
-    
+  const onLoginSubmit = async (data) => {
+        const responce = await fetch(`${baseUrl}/login`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify(data) 
+        });
+        const result = await responce.json();
+        console.log(result);
+      setAuth(result);
+      navigate('/');    
+  } 
+  const onRegisterSubmit = async (data) => {
+    const responce = await fetch(`${baseUrl}/register`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(data, authValues.token) 
+    });
+    const result = await responce.json();
+    console.log(result);
+  setAuth(result);
+  navigate('/');    
 } 
-const onLogout = () => {
-    setAuth({});
-}
+  const onLogout = () => {
+      setAuth({});
+  }
 
 const authValues = { 
   userId: auth._id,
@@ -53,7 +63,7 @@ const authValues = {
 
   return (
     <>
-     <AppContext.Provider value = {{tata, user, onSubmit,onLogout, authValues}}>
+     <AppContext.Provider value = {{tata, onLoginSubmit,onRegisterSubmit,onLogout, authValues}}>
      
         <Navigationbar />
         <Routes>
@@ -61,8 +71,9 @@ const authValues = {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/select" element={<Select />} />
+        
           <Route path="/createArticle" element={<CreateArticle />} />
+          <Route path="/userCreateArticle" element={<UserCreateArticle />} />
         </Routes>
       
      </AppContext.Provider>

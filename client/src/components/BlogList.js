@@ -1,15 +1,22 @@
 import Article from "./Article";
 
 const BlogList = ({ 
-  blogs,
-  selectValue
+  blogs
  }) => {
     return (
       <div >
         {blogs.map(blog => (
             <>
             
-          <Article selectValue={selectValue} blog_title={blog.title} blog_text={blog.text} blog_id={blog._id} />
+          <Article blog_image={blog.image} 
+          blog_title={blog.title} 
+          blog_text={blog.text}
+          blog_author={blog.author} 
+          blog_id={blog._id}
+          blog_owner_id={blog._ownerId}
+          blod_createdOn={blog._createdOn}
+
+           />
             </>
         
         ))}

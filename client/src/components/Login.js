@@ -25,16 +25,14 @@ const {register, handleSubmit, formState: {errors} } = useForm({
     resolver: yupResolver(schema),
 });
 
-const {onSubmit} = useContext(AppContext);
+const {onLoginSubmit} = useContext(AppContext);
 
-
-
-   
+ 
 
   return (
     <Container>
       
-       <Form onSubmit={handleSubmit(onSubmit)} >
+       <Form onSubmit={handleSubmit(onLoginSubmit)} >
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control type="email" placeholder="Enter email" {...register("email")} />

@@ -1,52 +1,152 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AppContext } from '../App';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import _ from 'lodash';
+import _, { result, thru } from 'lodash';
+import {  useNavigate } from 'react-router-dom';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import Koala from "../assets/Koala";
+import Desert  from "../assets/Desert";
+import Chrysanthemum from "../assets/Chrysanthemum";
 
-const baseUrl = 'http://localhost:3030/jsonstore/articles';
 
+//`${baseDeleteURL}/${blog_id}`
+
+
+
+
+const baseUrl = 'http://localhost:3030/jsonstore/likes';
 
 function Article({ 
   blog_title,
   blog_text,
   blog_id,
-  selectValue
+  blog_image,
+  blog_author,
+  blog_owner_id,
+  blog_createdOn
 }) {
-  const {user} = useContext(AppContext);
 
-  const initialState = [];
-  
-  const [likes, setLikes] = useState(initialState);
-   
-  const onLike = () => {
-    let all = [];
-    let sel = [blog_id, selectValue];
-    
-  setLikes(initialState => [...initialState, [blog_id, selectValue]]);
+  const baseDeleteUrl = 'http://localhost:3030/data/articles';
+
+let desertCheck = false;
+let koalaCheck = false;
+let chrysanthemumCheck = false;
+
+  if (blog_image=="Desert") {
+     desertCheck = true;
   }
-  
-   var bb = _.uniqWith(likes,_.isEqual);
-   
-  
-  
-  
-  
-  
+  if (blog_image=="Koala") {
+     koalaCheck = true;
+  }
+  if (blog_image=="Chrysanthemum") {
+    chrysanthemumCheck = true;
+ }
 
+
+
+  const navigate = useNavigate();
+  const {authValues} = useContext(AppContext); 
+  
+  const schema = yup.object().shape({
+    user: yup.string().required(),
+});
+const {register, handleSubmit, formState: {errors} } = useForm({
+    resolver: yupResolver(schema),
+});
+  
+  const onSubmit = async (data) => {
+    console.log(data);
+    const responce = await fetch(baseUrl, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(data) 
+    });
+    const result = await responce.json(); 
+    
+  } 
+
+  const [likes, setLikes] = useState([]);
+ 
+
+    useEffect(() => {
+      fetch(baseUrl)
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          setLikes(Object.values(data));
+        })
+     
+        
+    }, [])
+   
+
+    var newArray = likes.filter(function (el)
+    {
+      return  el.blog_id == blog_id ;
+    }
+    );  
+     const arr = newArray.map(object => object.user);    
+    
+     var bb = _.uniqWith(arr,_.isEqual);
+
+ 
+  const onDeleteSubmit = async(data) => {  
+    
+    const responce = await fetch(`${baseDeleteUrl}/${data.blog_id}`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+        "X-Authorization": authValues.token
+      },
+      body: JSON.stringify(data) 
+     
+    });
+    console.log(data);
+    const result = await responce.json();
+    navigate('/');
+  }
+ 
+  
+  
+   
   return (
     <>
-    <p1>user is:{selectValue}</p1>
+   
+    
+    
     <Card style={{ width: '18rem' }}>
-    hi {selectValue}
-      <Card.Img variant="top" src="data:image/jpeg;base64,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" />
+      {koalaCheck && <Koala />}
+      {desertCheck && <Desert />}
+      {chrysanthemumCheck && <Chrysanthemum />}
+
+    
+      <Card.Img variant="top" />
       <Card.Body>
-        <Card.Title>{ blog_title }</Card.Title>
+        <Card.Title>author: { blog_author }</Card.Title>
+        <Card.Title>title: { blog_title }</Card.Title>
         <Card.Text>
-         {blog_text}
+         text: {blog_text}
         </Card.Text>
-        <Button m variant="primary">Go somewhere</Button> 
-        <Button variant="warning" onClick={onLike} >Like</Button> {bb.length}
+       
+       
+    <form onSubmit={handleSubmit(onSubmit)}> 
+        <input type="hidden" value = {blog_id} {...register("blog_id")} />
+        <input type="hidden" value = {authValues.userEmail} {...register("user")} />
+      <Button variant="warning"  type="submit">Like</Button> {bb.length}
+    </form>
+
+    <form onSubmit={handleSubmit(onDeleteSubmit)}> 
+        <input type="hidden" value = {blog_id} {...register("blog_id")} />
+       
+      <Button variant="danger"  type="submit">Delete</Button> 
+    </form>
+
       </Card.Body>
     </Card>
     </>

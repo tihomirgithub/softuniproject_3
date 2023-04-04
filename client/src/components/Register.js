@@ -1,26 +1,48 @@
-import Container from 'react-bootstrap/Container';
+import Container from 'react-bootstrap/Container'; 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+import { useContext } from "react";
+import { AppContext } from '../App';
+
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+
+
+
+const result = '';
+const baseUrl = `http://localhost:3030/users`;
+
 function Register() {
+ 
+  const schema = yup.object().shape({
+    email: yup.string().required(),
+    password: yup.string().required(),        
+});
+const {register, handleSubmit, formState: {errors} } = useForm({
+    resolver: yupResolver(schema),
+});
+
+const {onRegisterSubmit} = useContext(AppContext);
+
+ 
+
   return (
     <Container>
-      <Form>
+      
+       <Form onSubmit={handleSubmit(onRegisterSubmit)} >
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" />
-        <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text>
+        <Form.Control type="email" placeholder="Enter email" {...register("email")} />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" />
+        <Form.Control type="password" placeholder="Password" {...register("password")} />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Check me out" />
-      </Form.Group>
+      
       <Button variant="primary" type="submit">
         Submit
       </Button>
