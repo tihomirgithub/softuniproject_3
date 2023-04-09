@@ -66,14 +66,6 @@ function Navigationbar() {
               </Link>
             </Nav.Link>    
                 )}
-            
-          
-            <Nav.Link>
-            {' '}
-              <Link className="text-decoration-none text-white" to="/createArticle">
-                CreateArticle
-              </Link>
-            </Nav.Link>
           </Nav>
         </Container>
       </Navbar>

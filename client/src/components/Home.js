@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import BlogList from "./BlogList";
-import { AppContext } from '../App';
+
+
 
 const baseUrl = 'http://localhost:3030/data/articles';
 

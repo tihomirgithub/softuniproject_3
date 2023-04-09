@@ -22,10 +22,9 @@ function UserCreateArticle() {
   const navigate = useNavigate();
 
   const initialState = [];
-  
   const [articles, setArticles] = useState(initialState);
 
-  const {tata} = useContext(AppContext);
+  
   
 
   const schema = yup.object().shape({
@@ -38,30 +37,18 @@ const {register, handleSubmit, formState: {errors} } = useForm({
     resolver: yupResolver(schema),
 });
 
-const onSubmit = async (data ) => {
-  console.log(data);
-  
-  const responce = await fetch(baseUrl, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      "X-Authorization": authValues.token
-    },
-    body: JSON.stringify(data) 
-  });
-  const result = await responce.json();
-  console.log (result);
-  navigate('/');
-}
+const {onUserCreateSubmit} = useContext(AppContext);
+
+
 
 
   return (
     <Container>
-        <Form onSubmit={handleSubmit(onSubmit)} >
+        <Form onSubmit={handleSubmit(onUserCreateSubmit)} >
      
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Author</Form.Label>
-        <Form.Control readOnly type="text" placeholder={tata} value={authValues.userEmail} {...register("author")} />
+        <Form.Control readOnly type="text"  value={authValues.userEmail} {...register("author")} />
         <p style={{color: "red"}} >{errors.author?.message}</p>
       </Form.Group>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
