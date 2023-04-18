@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext} from "react";
+
+import { AppContext } from '../App';
+
 import React from "react";
 import BlogList from "./BlogList";
 
@@ -10,7 +13,7 @@ const baseUrl = 'http://localhost:3030/data/articles';
 function Home() {
 
   
-  
+  const {authValues} = useContext(AppContext);
   
   const [blogs, setBlogs] = useState(null);
  
@@ -23,12 +26,20 @@ function Home() {
       .then(data => {
         setBlogs(Object.values(data));
       })
-  }, [])
-  console.log(blogs);
+  }, [blogs])
+
+ 
+  
+  
   return ( 
    <>
-  
-   <h1>Home</h1>
+    {!authValues.isAuthenticated &&
+     <h1>To make a like, comments or create articles you need to register and login !</h1>
+    }
+    {authValues.isAuthenticated &&
+    <h1 class="text-center" >Enjoy !</h1>
+    }
+   
    
    <div >
  

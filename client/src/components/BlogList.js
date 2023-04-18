@@ -1,12 +1,9 @@
 import Article from "./Article";
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-
-
-
 
 const BlogList = ({ 
   blogs
  }) => {
+
     return (
      <>
      <div className="d-flex flex-row justify-content-between">

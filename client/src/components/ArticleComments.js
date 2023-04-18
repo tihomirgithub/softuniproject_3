@@ -12,6 +12,7 @@ import * as yup from 'yup';
 import Koala from "../assets/Koala";
 import Desert  from "../assets/Desert";
 import Chrysanthemum from "../assets/Chrysanthemum";
+import Comment from "./Comment";
 
 
 const baseUrl = 'http://localhost:3030/data/articles';
@@ -20,16 +21,10 @@ const baseCommentsUrl = 'http://localhost:3030/jsonstore';
 function ArticleComments() {
 
   const [articleComments, setArticleComments] = useState([]);
+  const [articleCreatedComments, setArticleCreatedComments] = useState([]);
   const navigate = useNavigate();
   const {authValues} = useContext(AppContext); 
   const { blogId } = useParams();
-
-  
-
- 
- 
-
-  
 
 let desertCheck = false;
 let koalaCheck = false;
@@ -45,18 +40,20 @@ if (articleComments[4]=="Chrysanthemum") {
  chrysanthemumCheck = true;
 }
 
- 
- 
   const schema = yup.object().shape({
-    user: yup.string().required(),
+    author: yup.string().required(),
+    text: yup.string().required(),
+    id: yup.string().required(),
 });
 const {register, handleSubmit, formState: {errors} } = useForm({
     resolver: yupResolver(schema),
 });
+
   
   const onCommentCreateSubmit = async (data) => {
+  
     console.log(data);
-    const responce = await fetch(`${baseCommentsUrl}/${data.blog_id}`, {
+    const responce = await fetch(`${baseCommentsUrl}/${data.id}`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
@@ -64,8 +61,11 @@ const {register, handleSubmit, formState: {errors} } = useForm({
       body: JSON.stringify(data) 
     });
     const result = await responce.json(); 
-    
+    console.log(result);
+    navigate('/');
   } 
+
+ 
 
     useEffect(() => {
       fetch (`${baseUrl}/${blogId}`)
@@ -78,22 +78,35 @@ const {register, handleSubmit, formState: {errors} } = useForm({
 
     }, [blogId])
 
-    console.log(articleComments);
-   
+    useEffect(() => {
+      fetch (`${baseCommentsUrl}/${blogId}`)
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          setArticleCreatedComments(Object.values(data));
+        })
 
-  
- 
-  
+    }, [])
+
+   console.log(articleCreatedComments);
+
+   const commentAuthor = articleCreatedComments.map(object => object.author);
+   console.log(commentAuthor);
+
+  const commentText = articleCreatedComments.map(object => object.text);
+  console.log(commentText);
+
     
   return (
     <>
+    <Container>
+    <div className="d-flex flex-row justify-content-between">
     
     <Card style={{ width: '18rem' }}>
       {koalaCheck && <Koala />}
       {desertCheck && <Desert />}
       {chrysanthemumCheck && <Chrysanthemum />}
-
-      
 
       <Card.Img variant="top" />
       <Card.Body>
@@ -103,15 +116,20 @@ const {register, handleSubmit, formState: {errors} } = useForm({
          text: {articleComments[3]}
         </Card.Text>
        
-     
+
       </Card.Body>
     </Card>
 
-    <Container>
+   
       <h1>Make a Comment</h1>
         <Form onSubmit={handleSubmit(onCommentCreateSubmit)} >
      
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Blog Id</Form.Label>
+        <Form.Control readOnly type="text"  value={blogId} {...register("id")} />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Author</Form.Label>
         <Form.Control readOnly type="text"  value={authValues.userEmail} {...register("author")} />
       </Form.Group>
@@ -126,7 +144,20 @@ const {register, handleSubmit, formState: {errors} } = useForm({
         Submit
       </Button>
     </Form>
+    </div>
     </Container>
+    
+
+   
+    <Container>
+       {articleCreatedComments.map(blog => ( 
+        <Comment 
+          author={blog.author}
+          text={blog.text} 
+         
+         />    
+       ))}
+     </Container>
    
     
     </>
